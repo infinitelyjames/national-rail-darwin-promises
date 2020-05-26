@@ -1,186 +1,237 @@
-var request = require('request')
-var Bluebird = require('bluebird')
+const axios = require('axios');
 
-var requestBuilder = require('./requestBuilder.js')
-var parser = require('./parsers.js')
+const requestBuilder = require('./requestBuilder.js');
+const Parsers = require('./parsers.js');
 
-var baseUrl = 'https://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb11.asmx'
+class Darwin {
+  constructor(apiKey, options) {
+    this.key = apiKey || process.env.DARWIN_TOKEN;
+    this.baseUrl = 'https://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb11.asmx';
 
-var Darwin = function (apiKey, options) {
-  this.key = apiKey || process.env.DARWIN_TOKEN
-  if (options && options.baseUrl) {
-    baseUrl = options.baseUrl
+    if (options && options.baseUrl) {
+      this.baseUrl = options.baseUrl;
+    }
+  }
+
+  getBaseUrl() {
+    return this.baseUrl;
+  }
+
+  static get(url) {
+    return new Promise((resolve, reject) => {
+      axios.get(url)
+        .then((response) => {
+          if (response.status > 300) {
+            reject(response);
+          } else {
+            resolve(response.data);
+          }
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  post(xml) {
+    const xmlWithToken = xml.replace('$$TOKEN$$', this.key);
+    return new Promise((resolve, reject) => {
+      axios.post(this.baseUrl, xmlWithToken, {
+        headers: {
+          'Content-Type': 'text/xml',
+        },
+      })
+        .then((response) => {
+          if (response.status > 300) {
+            reject(response);
+          } else {
+            resolve(response.data);
+          }
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  getDepartureBoard(station, options) {
+    return new Promise((resolve, reject) => {
+      const requestXML = requestBuilder.getDepartureBoardRequest(station, options);
+      this.post(requestXML)
+        .then((result) => {
+          resolve(Parsers.parseDepartureBoardResponse(result));
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  getDepartureBoardWithDetails(station, options) {
+    return new Promise((resolve, reject) => {
+      const requestXML = requestBuilder.getDepartureBoardWithDetails(station, options);
+      this.post(requestXML)
+        .then((result) => {
+          resolve(Parsers.parseDepartureBoardWithDetailsResponse(result));
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  getArrivalsBoard(station, options) {
+    return new Promise((resolve, reject) => {
+      const requestXML = requestBuilder.getArrivalsBoard(station, options);
+      this.post(requestXML)
+        .then((result) => {
+          resolve(Parsers.parseArrivalsBoardResponse(result));
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  getArrivalsBoardWithDetails(station, options) {
+    return new Promise((resolve, reject) => {
+      const requestXML = requestBuilder.getArrivalsBoardWithDetails(station, options);
+      this.post(requestXML)
+        .then((result) => {
+          resolve(Parsers.parseArrivalsBoardWithDetails(result));
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  getArrivalsDepartureBoard(station, options) {
+    return new Promise((resolve, reject) => {
+      const requestXML = requestBuilder.getArrivalsDepartureBoard(station, options);
+      this.post(requestXML)
+        .then((result) => {
+          resolve(Parsers.parseArrivalsDepartureBoard(result));
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  getArrivalsDepartureBoardWithDetails(station, options) {
+    return new Promise((resolve, reject) => {
+      const requestXML = requestBuilder.getArrivalsDepartureBoardWithDetails(station, options);
+      this.post(requestXML)
+        .then((result) => {
+          resolve(Parsers.parseArrivalsDepartureBoardWithDetails(result));
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  getServiceDetails(serviceId) {
+    return new Promise((resolve, reject) => {
+      const requestXML = requestBuilder.getServiceDetails(serviceId);
+      this.post(requestXML)
+        .then((result) => {
+          resolve(Parsers.parseServiceDetails(result));
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  getNextDeparture(station, destination, options) {
+    return new Promise((resolve, reject) => {
+      const requestXML = requestBuilder.getNextDeparture(station, destination, options);
+      this.post(requestXML)
+        .then((result) => {
+          resolve(Parsers.parseNextDepartureResponse(result));
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  getNextDepartureWithDetails(station, destination, options) {
+    return new Promise((resolve, reject) => {
+      const requestXML = requestBuilder.getNextDepartureWithDetails(station, destination, options);
+      this.post(requestXML)
+        .then((result) => {
+          resolve(Parsers.parseNextDepartureWithDetailsResponse(result));
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  getArrival(station, destination, options) {
+    return new Promise((resolve, reject) => {
+      const requestXML = requestBuilder.getArrival(station, destination, options);
+      this.post(requestXML)
+        .then((result) => {
+          resolve(Parsers.parseArrivalsBoardResponse(result));
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  getFastestDeparture(station, destination, options) {
+    return new Promise((resolve, reject) => {
+      const requestXML = requestBuilder.getFastestDeparture(station, destination, options);
+      this.post(requestXML)
+        .then((result) => {
+          resolve(Parsers.parseFastestDeparture(result));
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  getFastestDepartureWithDetails(station, destination, options) {
+    return new Promise((resolve, reject) => {
+      const requestXML = requestBuilder
+        .getFastestDepartureWithDetails(station, destination, options);
+      this.post(requestXML)
+        .then((result) => {
+          resolve(Parsers.parseFastestDeparturesWithDetail(result));
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  static getStationDetails(stationName) {
+    return new Promise((resolve, reject) => {
+      const url = `http://ojp.nationalrail.co.uk/find/stationsDLRLU/${encodeURIComponent(stationName)}`;
+      this.get(url)
+        .then((body) => {
+          const results = JSON.parse(body);
+          const output = results.map((result) => ({
+            code: result[0],
+            name: result[1],
+            longitude: result[8],
+            latitude: result[7],
+            postcode: result[9],
+            operator: result[10],
+          }));
+          resolve(output);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
   }
 }
 
-Darwin.prototype.getBaseUrl = function () {
-  return baseUrl
-}
-
-Darwin.prototype.thenablePOST = function (xml) {
-  var xmlWithToken = xml.replace('$$TOKEN$$', this.key)
-  return new Bluebird(function (resolve, reject) {
-    request.post({
-      url: baseUrl,
-      headers: {
-        'content-type': 'text/xml'
-      },
-      body: xmlWithToken
-    }, function (err, response, body) {
-      if (err) {
-        console.log(err)
-        reject(err)
-      } else if (response.statusCode > 300) {
-        reject(response)
-      } else {
-        resolve(body)
-      }
-    })
-  })
-}
-
-function thenableGET (url) {
-  return new Bluebird(function (resolve, reject) {
-    request.get({
-      url: url
-    }, function (err, response, body) {
-      if (err) {
-        reject(err)
-      } else if (response.statusCode > 300) {
-        reject(response)
-      } else {
-        resolve(body)
-      }
-    })
-  })
-}
-
-Darwin.prototype.getDepartureBoard = function (station, options, callback) {
-  var requestXML = requestBuilder.getDepartureBoardRequest(station, options)
-  this.thenablePOST(requestXML).then(function (result) {
-    callback(null, parser.parseDepartureBoardResponse(result))
-  }).catch(function (err) {
-    callback(err, null)
-  })
-}
-
-Darwin.prototype.getDepartureBoardWithDetails = function (station, options, callback) {
-  var requestXML = requestBuilder.getDepartureBoardWithDetails(station, options)
-  this.thenablePOST(requestXML).then(function (result) {
-    callback(null, parser.parseDepartureBoardWithDetailsResponse(result))
-  }).catch(function (err) {
-    callback(err, null)
-  })
-}
-
-Darwin.prototype.getArrivalsBoard = function (station, options, callback) {
-  var requestXML = requestBuilder.getArrivalsBoard(station, options)
-  this.thenablePOST(requestXML).then(function (result) {
-    callback(null, parser.parseArrivalsBoardResponse(result))
-  }).catch(function (err) {
-    callback(err, null)
-  })
-}
-
-Darwin.prototype.getArrivalsBoardWithDetails = function (station, options, callback) {
-  var requestXML = requestBuilder.getArrivalsBoardWithDetails(station, options)
-  this.thenablePOST(requestXML).then(function (result) {
-    callback(null, parser.parseArrivalsBoardWithDetails(result))
-  }).catch(function (err) {
-    callback(err, null)
-  })
-}
-
-Darwin.prototype.getArrivalsDepartureBoard = function (station, options, callback) {
-  var requestXML = requestBuilder.getArrivalsDepartureBoard(station, options)
-  this.thenablePOST(requestXML).then(function (result) {
-    callback(null, parser.parseArrivalsDepartureBoard(result))
-  }).catch(function (err) {
-    callback(err, null)
-  })
-}
-
-Darwin.prototype.getArrivalsDepartureBoardWithDetails = function (station, options, callback) {
-  var requestXML = requestBuilder.getArrivalsDepartureBoardWithDetails(station, options)
-  this.thenablePOST(requestXML).then(function (result) {
-    callback(null, parser.parseArrivalsDepartureBoardWithDetails(result))
-  }).catch(function (err) {
-    callback(err, null)
-  })
-}
-
-Darwin.prototype.getServiceDetails = function (serviceId, callback) {
-  var requestXML = requestBuilder.getServiceDetails(serviceId)
-  this.thenablePOST(requestXML).then(function (result) {
-    callback(null, parser.parseServiceDetails(result))
-  }).catch(function (err) {
-    callback(err, null)
-  })
-}
-
-Darwin.prototype.getNextDeparture = function (station, destination, options, callback) {
-  var requestXML = requestBuilder.getNextDeparture(station, destination, options)
-  this.thenablePOST(requestXML).then(function (result) {
-    callback(null, parser.parseNextDepartureResponse(result))
-  }).catch(function (err) {
-    callback(err, null)
-  })
-}
-
-Darwin.prototype.getNextDepartureWithDetails = function (station, destination, options, callback) {
-  var requestXML = requestBuilder.getNextDepartureWithDetails(station, destination, options)
-  this.thenablePOST(requestXML).then(function (result) {
-    callback(null, parser.parseNextDepartureWithDetailsResponse(result))
-  }).catch(function (err) {
-    callback(err, null)
-  })
-}
-
-Darwin.prototype.getArrival = function (station, destination, options, callback) {
-  var requestXML = requestBuilder.getArrival(station, destination, options)
-  this.thenablePOST(requestXML).then(function (result) {
-    callback(null, parser.parseArrivalsBoardResponse(result))
-  }).catch(function (err) {
-    callback(err, null)
-  })
-}
-
-Darwin.prototype.getFastestDeparture = function (station, destination, options, callback) {
-  var requestXML = requestBuilder.getFastestDeparture(station, destination, options)
-  this.thenablePOST(requestXML).then(function (result) {
-    callback(null, parser.parseFastestDeparture(result))
-  }).catch(function (err) {
-    callback(err, null)
-  })
-}
-
-Darwin.prototype.getFastestDepartureWithDetails = function (station, destination, options, callback) {
-  var requestXML = requestBuilder.getFastestDepartureWithDetails(station, destination, options)
-  this.thenablePOST(requestXML).then(function (result) {
-    callback(null, parser.parseFastestDeparturesWithDetail(result))
-  }).catch(function (err) {
-    callback(err, null)
-  })
-}
-
-Darwin.prototype.getStationDetails = function (stationName, callback) {
-  var url = 'http://ojp.nationalrail.co.uk/find/stationsDLRLU/' + encodeURIComponent(stationName)
-  thenableGET(url).then(function (body) {
-    var results = JSON.parse(body)
-    var output = results.map(function (result) {
-      return {
-        'code': result[0],
-        'name': result[1],
-        'longitude': result[8],
-        'latitude': result[7],
-        'postcode': result[9],
-        'operator': result[10]
-      }
-    })
-    callback(null, output)
-  }).catch(function (err) {
-    callback(err, null)
-  })
-}
-
-module.exports = Darwin
+module.exports = Darwin;
