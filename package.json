@@ -1,6 +1,6 @@
 {
   "name": "national-rail-darwin-promises",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "national rail's darwin soap based api with promises",
   "main": "index.js",
   "scripts": {
