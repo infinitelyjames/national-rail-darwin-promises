@@ -82,7 +82,6 @@ class Parsers {
     const serviceXml = this.extractResponseObject(soapResponse, 'GetServiceDetailsResponse')
       .childNamed('GetServiceDetailsResult');
     const service = this.parseStandardService(serviceXml);
-
     serviceXml.eachChild((element) => {
       if (element.name === 'lt7:previousCallingPoints') {
         const previousCallingPoints = element.childNamed('lt7:callingPointList');
@@ -270,13 +269,19 @@ class Parsers {
           break;
         case 'lt5:origin':
         case 'lt7:origin':
-          origin = element.childNamed('lt4:location');
-          train.origin = this.parseLocation(origin);
+          origin = element.childrenNamed('lt4:location');
+          train.origin = [];
+          origin.forEach((loc) => {
+            train.origin.push(this.parseLocation(loc));
+          })
           break;
         case 'lt5:destination':
         case 'lt7:destination':
-          destin = element.childNamed('lt4:location');
-          train.destination = this.parseLocation(destin);
+          destin = element.childrenNamed('lt4:location');
+          train.destination = [];
+          destin.forEach((loc) => {
+            train.destination.push(this.parseLocation(loc));
+          });
           break;
         default:
           break;
