@@ -1,4 +1,4 @@
-const templates = require('./templates.js');
+const templates = require('./templates');
 
 class RequestBuilder {
   static applyOptions(requestXML, options) {

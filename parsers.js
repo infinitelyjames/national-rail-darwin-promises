@@ -273,7 +273,7 @@ class Parsers {
           train.origin = [];
           origin.forEach((loc) => {
             train.origin.push(this.parseLocation(loc));
-          })
+          });
           break;
         case 'lt5:destination':
         case 'lt7:destination':

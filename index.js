@@ -1,7 +1,7 @@
 const axios = require('axios');
 
-const requestBuilder = require('./requestBuilder.js');
-const Parsers = require('./parsers.js');
+const requestBuilder = require('./requestBuilder');
+const Parsers = require('./parsers');
 
 class Darwin {
   constructor(apiKey, options) {

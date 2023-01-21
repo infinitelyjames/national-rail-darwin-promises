@@ -23,12 +23,12 @@
   },
   "homepage": "https://github.com/danielhartuk/national-rail-darwin-promises#readme",
   "dependencies": {
-    "axios": "^0.19.2",
-    "xmldoc": "1.1.2"
+    "axios": "^1.2.3",
+    "xmldoc": "^1.2.0"
   },
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.1.0",
-    "eslint-plugin-import": "^2.20.2"
+    "eslint": "^8.32.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5"
   }
 }
