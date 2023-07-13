@@ -339,7 +339,7 @@ class Parsers {
     return {
       name: location.childNamed("lt4:locationName").val,
       crs: location.childNamed("lt4:crs").val,
-      via: location.childNamed("lt4:via").val || null,
+      via: location.childNamed("lt4:via").val,
     };
   }
 
