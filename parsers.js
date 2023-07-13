@@ -336,10 +336,17 @@ class Parsers {
   }
 
   static parseLocation(location) {
+    console.log("parsed");
+    if (location.childNamed("lt4:via").val) {
+      return {
+        name: location.childNamed("lt4:locationName").val,
+        crs: location.childNamed("lt4:crs").val,
+        via: location.childNamed("lt4:via").val,
+      };
+    }
     return {
       name: location.childNamed("lt4:locationName").val,
       crs: location.childNamed("lt4:crs").val,
-      via: location.childNamed("lt4:via").val,
     };
   }
 
