@@ -1,10 +1,8 @@
-/* eslint-disable comma-dangle */
-/* eslint-disable quotes */
-const xmldoc = require("xmldoc");
+const xmldoc = require('xmldoc');
 
 class Parsers {
   static parseArrivalsBoardResponse(soapResponse) {
-    const board = this.getTrainServicesBoard(soapResponse, "GetArrivalBoardResponse");
+    const board = this.getTrainServicesBoard(soapResponse, 'GetArrivalBoardResponse');
     const trains = [];
 
     try {
@@ -19,15 +17,15 @@ class Parsers {
   }
 
   static parseArrivalsBoardWithDetails(soapResponse) {
-    const board = this.getTrainServicesBoard(soapResponse, "GetArrBoardWithDetailsResponse");
+    const board = this.getTrainServicesBoard(soapResponse, 'GetArrBoardWithDetailsResponse');
     const trains = [];
 
     try {
       board.eachChild((service) => {
         const train = this.parseStandardService(service);
         service.eachChild((element) => {
-          if (element.name === "lt7:previousCallingPoints") {
-            const previousCallingPoints = element.childNamed("lt7:callingPointList");
+          if (element.name === 'lt7:previousCallingPoints') {
+            const previousCallingPoints = element.childNamed('lt7:callingPointList');
             train.previousCallingPoints = this.parseCallingPointList(previousCallingPoints);
           }
         });
@@ -41,7 +39,7 @@ class Parsers {
   }
 
   static parseArrivalsDepartureBoard(soapResponse) {
-    const board = this.getTrainServicesBoard(soapResponse, "GetArrivalDepartureBoardResponse");
+    const board = this.getTrainServicesBoard(soapResponse, 'GetArrivalDepartureBoardResponse');
     const trains = [];
 
     try {
@@ -56,18 +54,18 @@ class Parsers {
   }
 
   static parseArrivalsDepartureBoardWithDetails(soapResponse) {
-    const board = this.getTrainServicesBoard(soapResponse, "GetArrDepBoardWithDetailsResponse");
+    const board = this.getTrainServicesBoard(soapResponse, 'GetArrDepBoardWithDetailsResponse');
     const trains = [];
 
     try {
       board.eachChild((service) => {
         const train = this.parseStandardService(service);
         service.eachChild((element) => {
-          if (element.name === "lt7:previousCallingPoints") {
-            const previousCallingPoints = element.childNamed("lt7:callingPointList");
+          if (element.name === 'lt7:previousCallingPoints') {
+            const previousCallingPoints = element.childNamed('lt7:callingPointList');
             train.previousCallingPoints = this.parseCallingPointList(previousCallingPoints);
-          } else if (element.name === "lt7:subsequentCallingPoints") {
-            const subsequentCallingPoints = element.childNamed("lt7:callingPointList");
+          } else if (element.name === 'lt7:subsequentCallingPoints') {
+            const subsequentCallingPoints = element.childNamed('lt7:callingPointList');
             train.subsequentCallingPoints = this.parseCallingPointList(subsequentCallingPoints);
           }
         });
@@ -83,16 +81,16 @@ class Parsers {
   static parseServiceDetails(soapResponse) {
     const serviceXml = this.extractResponseObject(
       soapResponse,
-      "GetServiceDetailsResponse"
-    ).childNamed("GetServiceDetailsResult");
+      'GetServiceDetailsResponse'
+    ).childNamed('GetServiceDetailsResult');
     const service = this.parseStandardService(serviceXml);
     serviceXml.eachChild((element) => {
-      if (element.name === "lt7:previousCallingPoints") {
-        const previousCallingPoints = element.childNamed("lt7:callingPointList");
+      if (element.name === 'lt7:previousCallingPoints') {
+        const previousCallingPoints = element.childNamed('lt7:callingPointList');
         service.previousCallingPoints = this.parseCallingPointList(previousCallingPoints);
       }
-      if (element.name === "lt7:subsequentCallingPoints") {
-        const subsequentCallingPoints = element.childNamed("lt7:callingPointList");
+      if (element.name === 'lt7:subsequentCallingPoints') {
+        const subsequentCallingPoints = element.childNamed('lt7:callingPointList');
         service.subsequentCallingPoints = this.parseCallingPointList(subsequentCallingPoints);
       }
     });
@@ -101,7 +99,7 @@ class Parsers {
   }
 
   static parseDepartureBoardResponse(soapResponse) {
-    const board = this.getTrainServicesBoard(soapResponse, "GetDepartureBoardResponse");
+    const board = this.getTrainServicesBoard(soapResponse, 'GetDepartureBoardResponse');
     const trains = [];
     try {
       board.eachChild((service) => {
@@ -115,15 +113,15 @@ class Parsers {
   }
 
   static parseDepartureBoardWithDetailsResponse(soapResponse) {
-    const board = this.getTrainServicesBoard(soapResponse, "GetDepBoardWithDetailsResponse");
+    const board = this.getTrainServicesBoard(soapResponse, 'GetDepBoardWithDetailsResponse');
     const trains = [];
 
     try {
       board.eachChild((service) => {
         const train = this.parseStandardService(service);
         service.eachChild((element) => {
-          if (element.name === "lt7:subsequentCallingPoints") {
-            const subsequentCallingPoints = element.childNamed("lt7:callingPointList");
+          if (element.name === 'lt7:subsequentCallingPoints') {
+            const subsequentCallingPoints = element.childNamed('lt7:callingPointList');
             train.subsequentCallingPoints = this.parseCallingPointList(subsequentCallingPoints);
           }
         });
@@ -137,7 +135,7 @@ class Parsers {
   }
 
   static parseNextDepartureResponse(response) {
-    const board = this.getDepartureBoardDestination(response, "GetNextDeparturesResponse");
+    const board = this.getDepartureBoardDestination(response, 'GetNextDeparturesResponse');
     const trains = [];
 
     try {
@@ -154,7 +152,7 @@ class Parsers {
   static parseNextDepartureWithDetailsResponse(response) {
     const board = this.getDepartureBoardDestination(
       response,
-      "GetNextDeparturesWithDetailsResponse"
+      'GetNextDeparturesWithDetailsResponse'
     );
     const trains = [];
 
@@ -162,8 +160,8 @@ class Parsers {
       board.eachChild((service) => {
         const train = this.parseStandardService(service);
         service.eachChild((element) => {
-          if (element.name === "lt7:subsequentCallingPoints") {
-            const subsequentCallingPoints = element.childNamed("lt7:callingPointList");
+          if (element.name === 'lt7:subsequentCallingPoints') {
+            const subsequentCallingPoints = element.childNamed('lt7:callingPointList');
             train.subsequentCallingPoints = this.parseCallingPointList(subsequentCallingPoints);
           }
         });
@@ -177,7 +175,7 @@ class Parsers {
   }
 
   static parseFastestDeparture(response) {
-    const board = this.getDepartureBoardDestination(response, "GetFastestDeparturesResponse");
+    const board = this.getDepartureBoardDestination(response, 'GetFastestDeparturesResponse');
     const trains = [];
 
     try {
@@ -193,15 +191,15 @@ class Parsers {
   static parseFastestDepartureWithDetails(response) {
     const board = this.getDepartureBoardDestination(
       response,
-      "GetFastestDeparturesWithDetailsResponse"
+      'GetFastestDeparturesWithDetailsResponse'
     );
     const trains = [];
     try {
       board.eachChild((service) => {
         const train = this.parseStandardService(service);
         service.eachChild((element) => {
-          if (element.name === "lt7:subsequentCallingPoints") {
-            const subsequentCallingPoints = element.childNamed("lt7:callingPointList");
+          if (element.name === 'lt7:subsequentCallingPoints') {
+            const subsequentCallingPoints = element.childNamed('lt7:callingPointList');
             train.subsequentCallingPoints = this.parseCallingPointList(subsequentCallingPoints);
           }
         });
@@ -216,8 +214,8 @@ class Parsers {
 
   static getTrainServicesBoard(response, responseType) {
     const board = this.extractResponseObject(response, responseType)
-      .childNamed("GetStationBoardResult")
-      .childNamed("lt7:trainServices");
+      .childNamed('GetStationBoardResult')
+      .childNamed('lt7:trainServices');
     return board;
   }
 
@@ -229,65 +227,65 @@ class Parsers {
       let destin;
 
       switch (element.name) {
-        case "lt4:generatedAt":
-        case "lt7:generatedAt":
+        case 'lt4:generatedAt':
+        case 'lt7:generatedAt':
           s.generatedAt = element.val;
           break;
-        case "lt4:std":
-        case "lt7:std":
+        case 'lt4:std':
+        case 'lt7:std':
           train.std = element.val;
           break;
-        case "lt4:etd":
-        case "lt7:etd":
+        case 'lt4:etd':
+        case 'lt7:etd':
           train.etd = element.val;
           break;
-        case "lt4:sta":
-        case "lt7:sta":
+        case 'lt4:sta':
+        case 'lt7:sta':
           train.sta = element.val;
           break;
-        case "lt4:eta":
-        case "lt7:eta":
+        case 'lt4:eta':
+        case 'lt7:eta':
           train.eta = element.val;
           break;
-        case "lt4:platform":
-        case "lt7:platform":
+        case 'lt4:platform':
+        case 'lt7:platform':
           train.platform = element.val;
           break;
-        case "lt4:delayReason":
-        case "lt7:delayReason":
+        case 'lt4:delayReason':
+        case 'lt7:delayReason':
           train.delayReason = element.val;
           break;
-        case "lt4:serviceID":
-        case "lt7:serviceID":
+        case 'lt4:serviceID':
+        case 'lt7:serviceID':
           train.serviceId = element.val;
           break;
-        case "lt4:length":
-        case "lt7:length":
+        case 'lt4:length':
+        case 'lt7:length':
           train.length = element.val;
           break;
-        case "lt4:operator":
-        case "lt7:operator":
+        case 'lt4:operator':
+        case 'lt7:operator':
           train.operator = element.val;
           break;
-        case "lt4:operatorCode":
-        case "lt7:operatorCode":
+        case 'lt4:operatorCode':
+        case 'lt7:operatorCode':
           train.operatorCode = element.val;
           break;
-        case "lt5:rsid":
-        case "lt7:rsid":
+        case 'lt5:rsid':
+        case 'lt7:rsid':
           train.rsid = element.val;
           break;
-        case "lt5:origin":
-        case "lt7:origin":
-          origin = element.childrenNamed("lt4:location");
+        case 'lt5:origin':
+        case 'lt7:origin':
+          origin = element.childrenNamed('lt4:location');
           train.origin = [];
           origin.forEach((loc) => {
             train.origin.push(this.parseLocation(loc));
           });
           break;
-        case "lt5:destination":
-        case "lt7:destination":
-          destin = element.childrenNamed("lt4:location");
+        case 'lt5:destination':
+        case 'lt7:destination':
+          destin = element.childrenNamed('lt4:location');
           train.destination = [];
           destin.forEach((loc) => {
             train.destination.push(this.parseLocation(loc));
@@ -306,19 +304,19 @@ class Parsers {
       const callingPoint = {};
       child.eachChild((element) => {
         switch (element.name) {
-          case "lt7:length":
+          case 'lt7:length':
             callingPoint.length = element.val;
             break;
-          case "lt7:crs":
+          case 'lt7:crs':
             callingPoint.crs = element.val;
             break;
-          case "lt7:locationName":
+          case 'lt7:locationName':
             callingPoint.locationName = element.val;
             break;
-          case "lt7:st":
+          case 'lt7:st':
             callingPoint.st = element.val;
             break;
-          case "lt7:et":
+          case 'lt7:et':
             callingPoint.et = element.val;
             break;
           default:
@@ -332,22 +330,22 @@ class Parsers {
 
   static extractResponseObject(soapMessage, response) {
     const parsed = new xmldoc.XmlDocument(soapMessage);
-    return parsed.childNamed("soap:Body").childNamed(response);
+    return parsed.childNamed('soap:Body').childNamed(response);
   }
 
   static parseLocation(location) {
     return {
-      name: location.childNamed("lt4:locationName").val,
-      crs: location.childNamed("lt4:crs").val,
-      via: location.childNamed("lt4:via") ? location.childNamed("lt4:via").val : null,
+      name: location.childNamed('lt4:locationName').val,
+      crs: location.childNamed('lt4:crs').val,
+      via: location.childNamed('lt4:via') ? location.childNamed('lt4:via').val : null,
     };
   }
 
   static getDepartureBoardDestination(response, responseType) {
     const board = this.extractResponseObject(response, responseType)
-      .childNamed("DeparturesBoard")
-      .childNamed("lt7:departures")
-      .childNamed("lt7:destination");
+      .childNamed('DeparturesBoard')
+      .childNamed('lt7:departures')
+      .childNamed('lt7:destination');
 
     return board;
   }
