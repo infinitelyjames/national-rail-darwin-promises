@@ -79,8 +79,10 @@ class Parsers {
   }
 
   static parseServiceDetails(soapResponse) {
-    const serviceXml = this.extractResponseObject(soapResponse, 'GetServiceDetailsResponse')
-      .childNamed('GetServiceDetailsResult');
+    const serviceXml = this.extractResponseObject(
+      soapResponse,
+      'GetServiceDetailsResponse'
+    ).childNamed('GetServiceDetailsResult');
     const service = this.parseStandardService(serviceXml);
     serviceXml.eachChild((element) => {
       if (element.name === 'lt7:previousCallingPoints') {
@@ -148,7 +150,10 @@ class Parsers {
   }
 
   static parseNextDepartureWithDetailsResponse(response) {
-    const board = this.getDepartureBoardDestination(response, 'GetNextDeparturesWithDetailsResponse');
+    const board = this.getDepartureBoardDestination(
+      response,
+      'GetNextDeparturesWithDetailsResponse'
+    );
     const trains = [];
 
     try {
@@ -184,7 +189,10 @@ class Parsers {
   }
 
   static parseFastestDepartureWithDetails(response) {
-    const board = this.getDepartureBoardDestination(response, 'GetFastestDeparturesWithDetailsResponse');
+    const board = this.getDepartureBoardDestination(
+      response,
+      'GetFastestDeparturesWithDetailsResponse'
+    );
     const trains = [];
     try {
       board.eachChild((service) => {
@@ -322,14 +330,14 @@ class Parsers {
 
   static extractResponseObject(soapMessage, response) {
     const parsed = new xmldoc.XmlDocument(soapMessage);
-    return parsed.childNamed('soap:Body')
-      .childNamed(response);
+    return parsed.childNamed('soap:Body').childNamed(response);
   }
 
   static parseLocation(location) {
     return {
       name: location.childNamed('lt4:locationName').val,
       crs: location.childNamed('lt4:crs').val,
+      via: location.childNamed('lt4:via') ? location.childNamed('lt4:via').val : null,
     };
   }
 
