@@ -100,6 +100,7 @@ class Parsers {
 
   static parseDepartureBoardResponse(soapResponse) {
     const board = this.getTrainServicesBoard(soapResponse, 'GetDepartureBoardResponse');
+    //console.log(board)
     const trains = [];
     try {
       board.eachChild((service) => {

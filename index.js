@@ -6,7 +6,7 @@ const Parsers = require('./parsers');
 class Darwin {
   constructor(apiKey, options) {
     this.key = apiKey || process.env.DARWIN_TOKEN;
-    this.baseUrl = 'https://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb11.asmx';
+    this.baseUrl = 'https://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb11.asmx'; // Latest https://lite.realtime.nationalrail.co.uk/OpenLDBWS/wsdl.aspx 
 
     if (options && options.baseUrl) {
       this.baseUrl = options.baseUrl;
@@ -35,6 +35,7 @@ class Darwin {
 
   post(xml) {
     const xmlWithToken = xml.replace('$$TOKEN$$', this.key);
+    console.log(xmlWithToken)
     return new Promise((resolve, reject) => {
       axios.post(this.baseUrl, xmlWithToken, {
         headers: {
